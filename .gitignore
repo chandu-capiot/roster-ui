@@ -38,6 +38,11 @@ yarn-error.log
 /e2e/*.js
 /e2e/*.map
 
-# System Files
-.DS_Store
+# OS generated files
 Thumbs.db
+.DS_Store
+
+# Ignored files
+*.js
+*.map
+*.d.ts
