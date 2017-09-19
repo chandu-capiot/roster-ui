@@ -1,14 +1,14 @@
-import { NgModule, ModuleWithProviders, Provider } from '@angular/core';
-import { RoastrComponent } from './src/app/roastr.component';
+import { NgModule } from '@angular/core';
+import { RoasterComponent } from './src/roaster/roaster.component';
 
-export * from './src/app/roastr.component';
+export * from './src/roaster/roaster.component';
 
 @NgModule({
     declarations: [
-        RoastrComponent
+        RoasterComponent
     ],
     exports: [
-        RoastrComponent
+        RoasterComponent
     ]
 })
 export class RoastrModule { }

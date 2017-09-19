@@ -21,7 +21,7 @@
     "node_modules"
   ],
   "files": [
-    "src/app/roastr.component.ts",
+    "src/roaster/roaster.component.ts",
     "index.ts"
   ]
 

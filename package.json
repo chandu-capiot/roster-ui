@@ -1,6 +1,6 @@
 {
-  "name": "ng-roster",
-  "version": "0.0.0",
+  "name": "ng-roaster",
+  "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -23,6 +23,9 @@
     "@angular/platform-browser": "^4.2.4",
     "@angular/platform-browser-dynamic": "^4.2.4",
     "@angular/router": "^4.2.4",
+    "@types/fullcalendar": "^3.5.0",
+    "@types/jquery": "^3.2.12",
+    "@types/moment": "^2.13.0",
     "angular2-fullcalendar": "^1.0.19",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.7",
