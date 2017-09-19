@@ -22,7 +22,7 @@
   ],
   "files": [
     "src/app/roastr.component.ts",
-    "src/index.ts"
+    "index.ts"
   ]
 
 }
