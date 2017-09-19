@@ -11,4 +11,4 @@ export * from './src/roaster/roaster.component';
         RoasterComponent
     ]
 })
-export class RoastrModule { }
+export class RoasterModule { }
