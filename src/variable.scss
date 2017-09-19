@@ -1,0 +1,74 @@
+$fa-font-path: "../node_modules/font-awesome/fonts";
+$screen-sm-min: 570px;
+$screen-md-min: 900px;
+$screen-lg-min: 975px;
+$grid-float-breakpoint: 800px;
+$grid-gutter-width: 30px;
+$container-sm: 100%;
+$container-md: 100%;
+$container-lg: (900px + $grid-gutter-width);
+$font-family-sans-serif: "Lato",
+Helvetica Neue,
+Helvetica,
+Arial,
+sans-serif;
+$font-size-large: 20px;
+$font-size-base: 14px;
+$font-size-small: 12px;
+$font-size-h1: 48px;
+$font-size-h2: 36px;
+$font-size-h3: 32px;
+$font-size-h4: 24px;
+$font-size-h5: 18px;
+$font-size-h6: 16px;
+$headings-font-weight: 600;
+$line-height-base: 1.4;
+$border-radius-base: 10px;
+$border-radius-small: 5px;
+//Colours
+$white: #fff;
+$gray: #666;
+$gray-darker: #333;
+$gray-base: #202b3d;
+$gray-dark: #262626;
+$gray-lighter: #ccc;
+$gray-light: #979797;
+$brand-info: $gray-light;
+$brand-danger: #e57042;
+$brand-primary: #ffb131;
+$brand-success: #A7DA45;
+$brand-warning: #cb5628;
+$header-bg: #202b3d;
+$header-notification: #ffbe3e;
+$body-bg: #eceff2;
+$text-color: $gray-base;
+$title-color: $header-bg;
+$brand-primary-light: #ffc830;
+$brand-primary-lighter:#fde39c;
+$off-white: #fae9bb;
+$footer-color: #4a4a4a;
+$input-border-focus: #3898ec;
+$input-border-error: #cb5628;
+$input-border-success: #a7da45;
+$input-border: $brand-primary;
+$input-color: $gray-darker;
+$button-linkedin: #2897cb;
+$button-linkedin-hover: #42b1e5;
+$button-facebook: #4a90e2;
+$button-facebook-hover: #64aafc;
+$button-google: #cb5628;
+$button-google-hover: #e57042;
+// Navbar Configuration
+$navbar-height: 40px;
+$navbar-margin-bottom: 0;
+$navbar-border-radius: 0;
+$navbar-default-color: $white;
+$navbar-default-bg: $header-bg;
+$navbar-default-link-color: $white;
+$navbar-default-link-hover-color: $navbar-default-link-color;
+$border-radius-base: 10px;
+$border-radius-small: 5px;
+$error-message-bg: #f5e8e2;
+$calendar-bg:#2A3549;
+$modal-backdrop-bg: $header-bg;
+$modal-backdrop-opacity: 0.95;
