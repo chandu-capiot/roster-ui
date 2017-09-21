@@ -187,4 +187,16 @@
             font-size: 16px;
         }
     }
+    .current-week {
+        border-top-color: #699C26;
+        margin: 0px;
+        border-width: 3px;
+    }
+    .fc-zoomOut-button,
+    .fc-zoomIn-button {
+        background-color: #FFFFFF;
+        background-image: none;
+        width: 50px;
+    }
+    .fc-state-default {}
 }
