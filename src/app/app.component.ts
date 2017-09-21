@@ -2,11 +2,12 @@ import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import { Data } from '@angular/router';
 import { AfterContentInit, Component, group, OnInit } from '@angular/core';
 import * as $ from 'jquery';
+import * as moment from 'moment';
 import '../../node_modules/fullcalendar/dist/fullcalendar';
 import '../../node_modules/fullcalendar-scheduler/dist/scheduler';
 
 // declare var $: any;
-declare var moment: any;
+// declare var moment: any;
 declare var fullCalendar: any;
 
 @Component({
@@ -31,7 +32,8 @@ export class AppComponent implements OnInit, AfterContentInit {
 
     return this.options = {
       schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-      now: '2017-09-07',
+      now: new Date(),
+      slotLabelFormat : 'D',
       editable: true,
       aspectRatio: 1.8,
       resourceAreaWidth: '25%',
@@ -39,9 +41,9 @@ export class AppComponent implements OnInit, AfterContentInit {
       header: {
         left: 'projects,teams',
         center: '',
-        right: 'zoomOut,zoomIn prev,agendaTwoWeek,next'
+        right: 'zoomOut,zoomIn prev,timeline2Weeks,next'
       },
-      defaultView: 'timelineTwoMonths',
+      defaultView: 'timeline2Weeks',
       views: {
         timelineTwoMonths: {
           type: 'timeline',
@@ -49,48 +51,55 @@ export class AppComponent implements OnInit, AfterContentInit {
             weeks: 1
           }
         },
-        agendaTwoWeek: {
+        timeline2Weeks: {
             type: 'timeline',
-            duration: { weeks: 1 },
+            duration: { weeks: 3 },
             slotDuration: '24:00',
             buttonText: 'Week'
+        },
+        timeline5Weeks: {
+          type: 'timeline',
+          duration: { weeks: 6 },
+          slotDuration: '24:00',
+          buttonText: 'Week'
         }
       },
       customButtons: {
         projects: {
           text: 'Projects',
           click: function() {
-            alert('Project details!');
+            // alert('Project details!');
           }
         },
         teams: {
           text: 'Teams',
           click: function() {
-            alert('Team details!');
+            // $('#calender').fullCalendar('changeView', 'timeline2Weeks');
           }
+        },
+        themeSystem: 'bootstrap3',
+        bootstrapGlyphicons : {
+            close: 'glyphicon-remove',
+            prev: 'glyphicon-chevron-left',
+            next: 'glyphicon-chevron-right',
+            prevYear: 'glyphicon-backward',
+            nextYear: 'glyphicon-forward'
         },
         zoomOut: {
           text: '-',
           click: function() {
-            //alert('Project details!');
+            $('#calendar').fullCalendar('changeView', 'timeline5Weeks');
+            $('.fc-zoomOut-button').addClass('fc-state-disabled');
+            $('.fc-zoomIn-button').removeClass('fc-state-disabled');
           },
-          visibleRange: function(currentDate) {
-              return {
-                  start: currentDate.clone().subtract(1, 'weeks'),
-                  end: currentDate.clone().add(2, 'weeks') // exclusive end, so 3
-              };
-          }
+          bootstrapGlyphicon : 'glyphicon-zoom-in'
         },
         zoomIn: {
           text: '+',
           click: function() {
-            //alert('Project details!');
-          },
-          visibleRange: function(currentDate) {
-              return {
-                  start: currentDate.clone().subtract(1, 'days'),
-                  end: currentDate.clone().subtract(7, 'days') // exclusive end, so 3
-              };
+            $('#calendar').fullCalendar('changeView', 'timeline2Weeks');
+            $('.fc-zoomOut-button').removeClass('fc-state-disabled');
+            $('.fc-zoomIn-button').addClass('fc-state-disabled');
           }
         }
       },
@@ -162,16 +171,26 @@ export class AppComponent implements OnInit, AfterContentInit {
           }
       ],
       viewRender: function (view, element) {
-        const searchHTML = '<div class="container">' +
-                                '<div class="row">' +
-                                  '<div class="col-md-12">' +
-                                    '<i class="fa fa-search fa-3"></i>' +
-                                    '<input type="text" class="resource-search" placeholder="' + $('.fc-resource-area .fc-widget-header span.fc-cell-text').html() + '" id="resource-search-name"/>' +
-                                  '</div>' +
-                                '</div>' +
-                            '</div>';
+        _self.renderSearchHTML();
+        const startDate = $('#calendar').fullCalendar('getView').start;
 
-        $('.fc-resource-area .fc-widget-header').html(searchHTML);
+        if (view.currentRangeUnit === 'week') {
+          const colspanCount = $('.fc-head .fc-time-area .fc-content table tbody tr th').length;
+          const row = $('<tr></tr>');
+          let currentWeek: any = '';
+          for (let i = 1, colspan = 7; i <= colspanCount / 7; i++) {
+            const weekStartDate = startDate.clone().add((colspan * (i - 1)), 'days');
+            const WeekEndDate = startDate.clone().add((colspan * i) - 1, 'days');
+            currentWeek = '';
+            if (weekStartDate.format('w') === moment(new Date()).format('w')) {
+              currentWeek = '<hr class="current-week"/>';
+            }
+            row.append('<th colspan="' + colspan + '">' + currentWeek + _self.getWeekStr(weekStartDate, WeekEndDate) + ' </th>');
+          }
+
+          $('.fc-head .fc-time-area colgroup').next().prepend(row);
+        }
+
         $('i.arrow').on('click', function(){
           $(this).toggleClass('down up');
           const rowObj = $(this).closest('tr');
@@ -193,46 +212,74 @@ export class AppComponent implements OnInit, AfterContentInit {
           let resourceHTML: string;
 
           if (resourceObj.children.length) {
-            const dividerResourceElementObj = $(resourceTds).closest('tr').prev();
-            const dividerTimeAreaEleObj = $(bodyTds).closest('tr').prev();
-            const dividerResourceText = dividerResourceElementObj.find('td.fc-divider span.fc-cell-text').text();
-
-            if (dividerResourceText !== '' ) {
-              const dividerHTML = '<div class="container resource-level-1">' +
-                                    '<div class="fc-cell-content row">' +
-                                        '<div class="fc-cell-text col-md-11">' +
-                                            '<div class="resource-title"> Woodside Energy </div>' +
-                                            '<div class="resource-name">' + dividerResourceText + '</div>' +
-                                        '</div>' +
-                                        '<div class="col-md-1"><i class="arrow up"></i></div>' +
-                                    '</div>' +
-                                  '</div>';
-              dividerResourceElementObj.find('td.fc-divider').html(dividerHTML);
-            }
-
-            dividerResourceElementObj.find('td.fc-divider').addClass(resourceObj.className);
-            dividerTimeAreaEleObj.find('td.fc-divider').addClass(resourceObj.className);
-
-            resourceHTML =  '<div class="container resource-level-2 ' + resourceObj.className + '">' +
-                              '<div class="fc-cell-content row">' +
-                                  '<div class="fc-cell-text col-md-11">' +
-                                      '<div class="resource-title">' + resourceObj.title + '</div>' +
-                                      '<div class="resource-name">' + resourceObj.name + '</div>' +
-                                  '</div>' +
-                                  '<div class="col-md-1"><i class="arrow up"></i></div>' +
-                              '</div>' +
-                            '</div>';
+            _self.renderResourceProjectDivider(resourceObj, resourceTds, bodyTds);
+            resourceHTML = _self.getResourceParentDOM(resourceObj);
           } else {
-            resourceHTML =  '<div class="container resource-level-3">' +
-                              '<div class="fc-cell-content row">' +
-                                  '<div class="fc-cell-text col-md-3 resource-title">' + resourceObj.title + '</div>' +
-                                  '<div class="fc-cell-text col-md-9 text-right resource-name">' + resourceObj.name + '</div>' +
-                              '</div>' +
-                            '</div>';
+            resourceHTML = _self.getResourceChildrenDOM(resourceObj);
           }
         $(resourceTds).html(resourceHTML);
       }
     };
+  }
+
+  renderSearchHTML() {
+    const searchHTML = '<div class="container">' +
+        '<div class="row">' +
+          '<div class="col-md-12">' +
+            '<i class="fa fa-search fa-3"></i>' +
+            '<input type="text" class="resource-search" placeholder="Search for projects, clients or tags..." id="resource-search-name"/>' +
+          '</div>' +
+        '</div>' +
+    '</div>';
+
+    $('.fc-resource-area .fc-widget-header').html(searchHTML);
+  }
+  getResourceParentDOM(resourceObj) {
+    const resourceHTML =  '<div class="container resource-level-2 ' + resourceObj.className + '">' +
+                            '<div class="fc-cell-content row">' +
+                                '<div class="fc-cell-text col-md-11">' +
+                                    '<div class="resource-title">' + resourceObj.title + '</div>' +
+                                    '<div class="resource-name">' + resourceObj.name + '</div>' +
+                                '</div>' +
+                                '<div class="col-md-1"><i class="arrow up"></i></div>' +
+                            '</div>' +
+                          '</div>';
+
+    return resourceHTML;
+  }
+
+  getResourceChildrenDOM(resourceObj) {
+    const resourceHTML =  '<div class="container resource-level-3">' +
+                            '<div class="fc-cell-content row">' +
+                                '<div class="fc-cell-text col-md-3 resource-title">' + resourceObj.title + '</div>' +
+                                '<div class="fc-cell-text col-md-9 text-right resource-name">' + resourceObj.name + '</div>' +
+                            '</div>' +
+                          '</div>';
+    return resourceHTML;
+  }
+
+  renderResourceProjectDivider (resourceObj, resourceTds, bodyTds) {
+    const dividerResourceElementObj = $(resourceTds).closest('tr').prev();
+    const dividerTimeAreaEleObj = $(bodyTds).closest('tr').prev();
+    const dividerResourceText = dividerResourceElementObj.find('td.fc-divider span.fc-cell-text').text();
+
+    if (dividerResourceText !== '' ) {
+      const dividerHTML = '<div class="container resource-level-1">' +
+                            '<div class="fc-cell-content row">' +
+                                '<div class="fc-cell-text col-md-11">' +
+                                    '<div class="resource-title"> Woodside Energy </div>' +
+                                    '<div class="resource-name">' + dividerResourceText + '</div>' +
+                                '</div>' +
+                                '<div class="col-md-1"><i class="arrow up"></i></div>' +
+                            '</div>' +
+                          '</div>';
+      dividerResourceElementObj.find('td.fc-divider').html(dividerHTML);
+    }
+
+    dividerResourceElementObj.find('td.fc-divider').addClass(resourceObj.className);
+    dividerTimeAreaEleObj.find('td.fc-divider').addClass(resourceObj.className);
+
+    return;
   }
   collapseResource (rowObj, currentRowIndex, isDivider) {
     for (let i = currentRowIndex + 1; i < rowObj.siblings().length + 1; i++) {
@@ -264,5 +311,17 @@ export class AppComponent implements OnInit, AfterContentInit {
       $('.fc-body .fc-resource-area tr:eq(' + i + ')').show();
       $('.fc-body .fc-time-area tr:eq(' + i + ')').show();
     }
+  }
+
+  getWeekStr (startDate, endDate) {
+    const startDateStr = startDate.format('D');
+    const endDateStr = endDate.format('D');
+    let weekStr = startDate.format('D');
+    if (endDate.format('MMM') !== startDate.format('MMM')) {
+      weekStr += ' ' + startDate.format('MMM');
+    }
+    weekStr += ' - ' + endDate.format('D') + ' ' + endDate.format('MMM');
+
+    return weekStr;
   }
 }
