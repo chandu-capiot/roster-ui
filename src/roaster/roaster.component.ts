@@ -159,14 +159,6 @@ export class RoasterComponent implements OnInit, AfterContentInit {
             $('.fc-teams-button').addClass('fc-state-disabled');
           }
         },
-        themeSystem: 'bootstrap3',
-        bootstrapGlyphicons : {
-            close: 'glyphicon-remove',
-            prev: 'glyphicon-chevron-left',
-            next: 'glyphicon-chevron-right',
-            prevYear: 'glyphicon-backward',
-            nextYear: 'glyphicon-forward'
-        },
         zoomOut: {
           text: '-',
           click: function() {
@@ -188,6 +180,9 @@ export class RoasterComponent implements OnInit, AfterContentInit {
       filterResourcesWithEvents: false,
       resourceGroupField: 'building',
       resources: function (callback) {
+        $('#roaster-calendar').find('.roster-actions').remove();
+        $('#roaster-calendar').find('.role-divider').remove();
+
         if (_self.isProject) {
           callback(_self.projectResource);
         } else {
@@ -195,11 +190,11 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         }
       },
       events: [
-        { id: '1', resourceId: 'a', start: '2017-10-04T02:00:00', end: '2017-10-04T07:00:00', title: 'Offered', className: 'offered' },
-        { id: '2', resourceId: 'b', start: '2017-10-04T05:00:00', end: '2017-10-04T22:00:00', title: 'Accepted', className: 'accepted' },
-        { id: '3', resourceId: 'c', start: '2017-10-06', end: '2017-10-08', title: 'Declined', className: 'declined' },
-        { id: '4', resourceId: 'd', start: '2017-10-07T03:00:00', end: '2017-10-07T28:00:00', title: 'Accepted', className: 'accepted' },
-        { id: '5', resourceId: 'e', start: '2017-10-07T00:30:00', end: '2017-10-07T22:30:00', title: 'Accepted', className: 'accepted' }
+        { id: '1', resourceId: 'a', start: '2017-10-14T02:00:00', end: '2017-10-14T07:00:00', title: 'Offered', className: 'offered' },
+        { id: '2', resourceId: 'b', start: '2017-10-14T05:00:00', end: '2017-10-14T22:00:00', title: 'Accepted', className: 'accepted' },
+        { id: '3', resourceId: 'c', start: '2017-10-16', end: '2017-10-18', title: 'Declined', className: 'declined' },
+        { id: '4', resourceId: 'd', start: '2017-10-17T03:00:00', end: '2017-10-17T28:00:00', title: 'Accepted', className: 'accepted' },
+        { id: '5', resourceId: 'e', start: '2017-10-17T00:30:00', end: '2017-10-17T22:30:00', title: 'Accepted', className: 'accepted' }
       ],
       eventRender: function (event, element, view) {
         const eventHTML = '<div class="fc-content event-title">' +
@@ -221,33 +216,27 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         $('button.fc-zoomIn-button').html('<span class="glyphicon glyphicon-zoom-in"></span>');
 
         const resourceLevelLength = $( '.fc-resource-area .resource-level-3' ).length;
-        //console.log($('.fc-resource-area').find('.roster-actions').length);
-        //if ($('.fc-resource-area').find('.roster-actions').length === 0) {
+
+        if ($('.fc-resource-area').find('.roster-actions').length === 0) {
           $.each($( '.fc-resource-area .resource-level-3' ), function(key, val){
             const roleDividerLength = $(this).closest('tr').next().find('td.role-divider').length;
             const fcDividerLength = $(this).closest('tr').next().find('td.fc-divider').length;
-            //console.log("roleDividerLength::"+roleDividerLength+"--fcDividerLength::"+fcDividerLength);
+
             if ( roleDividerLength > 0 || fcDividerLength > 0) {
               $(this).closest('tr').after(_self.renderInviteHTML());
             }else if (resourceLevelLength - 1 === key) {
               $(this).closest('tr').after(_self.renderInviteHTML());
             }
           });
-       // }
-        // console.log('inviteHTMLStatus::' + inviteHTMLStatus);
-        // if (!inviteHTMLStatus) {
+        }
         if ($('.fc-resource-area').find('roster-actions').length === 0) {
+          $('#roaster-calendar').find('.roster-time-invite').remove();
           $.each($( '.fc-resource-area .fc-scroller-canvas tr' ), function(key, val){
             if ($(this).hasClass('roster-actions')) {
-              //if (!$('.fc-time-area .fc-scroller-canvas tr').eq(key).hasClass('roster-time-invite')) {
               $('.fc-time-area .fc-scroller-canvas tr').eq(key).after('<tr class="roster-time-invite"><td></td></tr>');
-              // inviteHTMLStatus = true;
-              //}
             }
           });
         }
-
-        // }
       },
       resourceColumns: [
         {
@@ -263,7 +252,7 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         const startDate = $('#roaster-calendar').fullCalendar('getView').start;
 
         if (view.currentRangeUnit === 'week') {
-          if($(".fc-time-area").find('.week-str').length === 0) {
+          if ($('.fc-time-area').find('.week-str').length === 0) {
             _self.timelineWeekHeader(startDate);
           }
         }else if (view.currentRangeUnit === 'day')  {
@@ -347,11 +336,10 @@ export class RoasterComponent implements OnInit, AfterContentInit {
       const weekStartDate = startDate.clone().add((colspan * (i - 1)), 'days');
       const weekEndDate = startDate.clone().add((colspan * i) - 1, 'days');
       currentWeek = '';
-      // console.log(weekStartDate.format('D') + '==' + moment(new Date()).format('D'));
       if (weekStartDate.format('D') === moment(new Date()).format('D')) {
         currentWeek = '<hr class="current-week"/>';
       }
-      // console.log(colspan);
+
       row.append('<th colspan="' + colspan + '">' + currentWeek + this.getWeekStr(weekStartDate, weekEndDate, 'day') + ' </th>');
     }
 
