@@ -98,7 +98,6 @@ export class RoasterComponent implements OnInit, AfterContentInit {
     const _self = this;
     setTimeout(function () {
       $('.fc-timeline-event').click(function (event) {
-        console.log(event);
         const parentOffset = $(this).offset();
         const relX = event.pageX - parentOffset.left;
         const relY = event.pageY - parentOffset.top;
@@ -106,7 +105,8 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         const posY = $(this).position().top;
         const height = $(this).height();
         const width = $(this).width();
-        _self.eventInfo.pageX = event.pageX - posX + width - relX + 50;
+        const leftNavWidth = $('.fc-resource-area').width();
+        _self.eventInfo.pageX = posX + leftNavWidth + width / 2 - 58; // 58 is for the arrow to point at center
         _self.eventInfo.pageY = event.pageY - posY + height - relY + 20;
         _self.eventInfo.showModal = true;
       });
@@ -115,6 +115,16 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         if (!container.is(e.target) && container.has(e.target).length === 0) {
           _self.eventInfo.showModal = false;
         }
+      });
+      $(window).scroll(function (event) {
+        // if (_self.eventInfo.showModal) {
+        //   const scrollLeft = $(window).scrollLeft();
+        //   const scrollTop = $(window).scrollTop();
+        //   if (scrollTop > _self.eventInfo.pageY) {
+        //     _self.eventInfo.pageY += scrollTop;
+        //   }
+        //   console.log(scrollTop);
+        // }
       });
     }, 100);
   }
@@ -226,6 +236,7 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         { id: '1', resourceId: 'a', start: '2017-10-14T02:00:00', end: '2017-10-14T07:00:00', title: 'Offered', className: 'offered' },
         { id: '2', resourceId: 'b', start: '2017-10-14T05:00:00', end: '2017-10-14T22:00:00', title: 'Accepted', className: 'accepted' },
         { id: '3', resourceId: 'c', start: '2017-10-16', end: '2017-10-18', title: 'Declined', className: 'declined' },
+        { id: '6', resourceId: 'f', start: '2017-10-22', end: '2017-10-28', title: 'Declined', className: 'declined' },
         { id: '4', resourceId: 'd', start: '2017-10-17T03:00:00', end: '2017-10-17T28:00:00', title: 'Accepted', className: 'accepted' },
         { id: '5', resourceId: 'e', start: '2017-10-17T00:30:00', end: '2017-10-17T22:30:00', title: 'Accepted', className: 'accepted' }
       ],
