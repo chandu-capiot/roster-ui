@@ -88,7 +88,40 @@ export class RoasterComponent implements OnInit, AfterContentInit {
     }
   ];
 
-  ngOnInit() { }
+  eventInfo = {
+    pageX: null,
+    pageY: null,
+    showModal: false
+  };
+
+  ngOnInit() {
+    const _self = this;
+    setTimeout(function () {
+      $('.fc-timeline-event').click(function (event) {
+        console.log(event);
+        const parentOffset = $(this).offset();
+        const relX = event.pageX - parentOffset.left;
+        const relY = event.pageY - parentOffset.top;
+        const posX = $(this).position().left;
+        const posY = $(this).position().top;
+        const height = $(this).height();
+        const width = $(this).width();
+        _self.eventInfo.pageX = event.pageX - posX + width - relX + 50;
+        _self.eventInfo.pageY = event.pageY - posY + height - relY + 20;
+        _self.eventInfo.showModal = true;
+      });
+      $(document).mouseup(function (e) {
+        const container = $('.event-info-modal');
+        if (!container.is(e.target) && container.has(e.target).length === 0) {
+          _self.eventInfo.showModal = false;
+        }
+      });
+    }, 100);
+  }
+
+  hideEventInfoPopUp(event: any) {
+    console.log(event);
+  }
 
   ngAfterContentInit() {
     this.initiateCalender();
@@ -113,7 +146,7 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         center: '',
         right: 'zoomOut,zoomIn prev,timeline2Weeks,timelineDay,next'
       },
-      nowIndicator : true,
+      nowIndicator: true,
       defaultView: 'timeline2Weeks',
       views: {
         timelineDay: {
@@ -126,11 +159,11 @@ export class RoasterComponent implements OnInit, AfterContentInit {
           buttonText: 'Day'
         },
         timeline2Weeks: {
-            type: 'timeline',
-            duration: { weeks: 3 },
-            slotDuration: '24:00',
-            slotLabelFormat: 'D',
-            buttonText: 'Week'
+          type: 'timeline',
+          duration: { weeks: 3 },
+          slotDuration: '24:00',
+          slotLabelFormat: 'D',
+          buttonText: 'Week'
         },
         timeline5Weeks: {
           type: 'timeline',
@@ -143,7 +176,7 @@ export class RoasterComponent implements OnInit, AfterContentInit {
       customButtons: {
         projects: {
           text: 'Projects',
-          click: function() {
+          click: function () {
             _self.isProject = true;
             $('#roaster-calendar').fullCalendar('refetchResources');
             $('.fc-teams-button').removeClass('fc-state-disabled');
@@ -152,7 +185,7 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         },
         teams: {
           text: 'Teams',
-          click: function() {
+          click: function () {
             _self.isProject = false;
             $('#roaster-calendar').fullCalendar('refetchResources');
             $('.fc-projects-button').removeClass('fc-state-disabled');
@@ -160,25 +193,25 @@ export class RoasterComponent implements OnInit, AfterContentInit {
           }
         },
         themeSystem: 'bootstrap3',
-        bootstrapGlyphicons : {
-            close: 'glyphicon-remove',
-            prev: 'glyphicon-chevron-left',
-            next: 'glyphicon-chevron-right',
-            prevYear: 'glyphicon-backward',
-            nextYear: 'glyphicon-forward'
+        bootstrapGlyphicons: {
+          close: 'glyphicon-remove',
+          prev: 'glyphicon-chevron-left',
+          next: 'glyphicon-chevron-right',
+          prevYear: 'glyphicon-backward',
+          nextYear: 'glyphicon-forward'
         },
         zoomOut: {
           text: '-',
-          click: function() {
+          click: function () {
             $('#roaster-calendar').fullCalendar('changeView', 'timeline5Weeks');
             $('.fc-zoomOut-button').addClass('fc-state-disabled');
             $('.fc-zoomIn-button').removeClass('fc-state-disabled');
           },
-          bootstrapGlyphicon : 'glyphicon glyphicon-zoom-in'
+          bootstrapGlyphicon: 'glyphicon glyphicon-zoom-in'
         },
         zoomIn: {
           text: '+',
-          click: function() {
+          click: function () {
             $('#roaster-calendar').fullCalendar('changeView', 'timeline2Weeks');
             $('.fc-zoomOut-button').removeClass('fc-state-disabled');
             $('.fc-zoomIn-button').addClass('fc-state-disabled');
@@ -195,7 +228,7 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         }
       },
       events: [
-        { id: '1', resourceId: 'a', start: '2017-10-04T02:00:00', end: '2017-10-04T07:00:00', title: 'Offered', className: 'offered' },
+        { id: '1', resourceId: 'a', start: '2017-10-14T02:00:00', end: '2017-10-14T07:00:00', title: 'Offered', className: 'offered' },
         { id: '2', resourceId: 'b', start: '2017-10-04T05:00:00', end: '2017-10-04T22:00:00', title: 'Accepted', className: 'accepted' },
         { id: '3', resourceId: 'c', start: '2017-10-06', end: '2017-10-08', title: 'Declined', className: 'declined' },
         { id: '4', resourceId: 'd', start: '2017-10-07T03:00:00', end: '2017-10-07T28:00:00', title: 'Accepted', className: 'accepted' },
@@ -220,15 +253,15 @@ export class RoasterComponent implements OnInit, AfterContentInit {
 
         $('button.fc-zoomIn-button').html('<span class="glyphicon glyphicon-zoom-in"></span>');
 
-        const resourceLevelLength = $( '.fc-resource-area .resource-level-3' ).length;
+        const resourceLevelLength = $('.fc-resource-area .resource-level-3').length;
         console.log($('.fc-resource-area').find('roster-actions').length);
         if ($('.fc-resource-area').find('roster-actions').length === 0) {
-          $.each($( '.fc-resource-area .resource-level-3' ), function(key, val){
+          $.each($('.fc-resource-area .resource-level-3'), function (key, val) {
             const roleDividerLength = $(this).closest('tr').next().find('td.role-divider').length;
             const fcDividerLength = $(this).closest('tr').next().find('td.fc-divider').length;
-            if ( roleDividerLength > 0 || fcDividerLength > 0) {
+            if (roleDividerLength > 0 || fcDividerLength > 0) {
               $(this).closest('tr').after(_self.renderInviteHTML());
-            }else if (resourceLevelLength - 1 === key) {
+            } else if (resourceLevelLength - 1 === key) {
               $(this).closest('tr').after(_self.renderInviteHTML());
             }
           });
@@ -236,12 +269,12 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         // console.log('inviteHTMLStatus::' + inviteHTMLStatus);
         // if (!inviteHTMLStatus) {
         if ($('.fc-resource-area').find('roster-actions').length === 0) {
-          $.each($( '.fc-resource-area .fc-scroller-canvas tr' ), function(key, val){
+          $.each($('.fc-resource-area .fc-scroller-canvas tr'), function (key, val) {
             if ($(this).hasClass('roster-actions')) {
-              //if (!$('.fc-time-area .fc-scroller-canvas tr').eq(key).hasClass('roster-time-invite')) {
+              // if (!$('.fc-time-area .fc-scroller-canvas tr').eq(key).hasClass('roster-time-invite')) {
               $('.fc-time-area .fc-scroller-canvas tr').eq(key).after('<tr class="roster-time-invite"><td></td></tr>');
               // inviteHTMLStatus = true;
-              //}
+              // }
             }
           });
         }
@@ -263,11 +296,11 @@ export class RoasterComponent implements OnInit, AfterContentInit {
 
         if (view.currentRangeUnit === 'week') {
           _self.timelineWeekHeader(startDate);
-        }else if (view.currentRangeUnit === 'day')  {
-           _self.timelineDayHeader(startDate);
+        } else if (view.currentRangeUnit === 'day') {
+          _self.timelineDayHeader(startDate);
         }
 
-        $('i.arrow').on('click', function(){
+        $('i.arrow').on('click', function () {
           $(this).toggleClass('down up');
           const rowObj = $(this).closest('tr');
           const currentRowIndex = rowObj.index();
@@ -279,40 +312,40 @@ export class RoasterComponent implements OnInit, AfterContentInit {
 
           if ($(this).hasClass('down')) {
             _self.collapseResource(rowObj, currentRowIndex, isDivider);
-          }else {
+          } else {
             _self.expandResource(rowObj, currentRowIndex, isDivider);
           }
         });
       },
-      resourceRender: function(resourceObj, resourceTds, bodyTds) {
-          let resourceHTML: string;
+      resourceRender: function (resourceObj, resourceTds, bodyTds) {
+        let resourceHTML: string;
 
-          if (_self.isProject) {
-            if (resourceObj.children.length) {
-              _self.renderResourceProjectDivider(resourceObj, resourceTds, bodyTds);
+        if (_self.isProject) {
+          if (resourceObj.children.length) {
+            _self.renderResourceProjectDivider(resourceObj, resourceTds, bodyTds);
 
-              resourceHTML = _self.getResourceProjectParentDOM(resourceObj);
-              $(resourceTds).addClass('divider-child');
-              // console.log ($(resourceTds).parent().parent().html());
-              // console.log("====");
-              // if ($(resourceTds).closest('tr').next().length > 0) {
-                $('<tr><td class="role-divider"></td></tr>').insertBefore($(resourceTds).closest('tr'));
-                $('<tr><td class="role-divider"></td></tr>').insertBefore($(bodyTds).closest('tr'));
-              // }
-            } else {
-              resourceHTML = _self.getResourceProjectChildrenDOM(resourceObj);
-            }
+            resourceHTML = _self.getResourceProjectParentDOM(resourceObj);
+            $(resourceTds).addClass('divider-child');
+            // console.log ($(resourceTds).parent().parent().html());
+            // console.log("====");
+            // if ($(resourceTds).closest('tr').next().length > 0) {
+            $('<tr><td class="role-divider"></td></tr>').insertBefore($(resourceTds).closest('tr'));
+            $('<tr><td class="role-divider"></td></tr>').insertBefore($(bodyTds).closest('tr'));
+            // }
           } else {
-            if (resourceObj.children.length) {
-              _self.renderResourceTeamDivider(resourceObj, resourceTds, bodyTds);
-
-              resourceHTML = _self.getResourceTeamParentDOM(resourceObj);
-              $(resourceTds).addClass('divider-child');
-            } else {
-              resourceHTML = _self.getResourceTeamChildrenDOM(resourceObj);
-            }
+            resourceHTML = _self.getResourceProjectChildrenDOM(resourceObj);
           }
-          $(resourceTds).html(resourceHTML);
+        } else {
+          if (resourceObj.children.length) {
+            _self.renderResourceTeamDivider(resourceObj, resourceTds, bodyTds);
+
+            resourceHTML = _self.getResourceTeamParentDOM(resourceObj);
+            $(resourceTds).addClass('divider-child');
+          } else {
+            resourceHTML = _self.getResourceTeamChildrenDOM(resourceObj);
+          }
+        }
+        $(resourceTds).html(resourceHTML);
       }
     };
   }
@@ -359,117 +392,118 @@ export class RoasterComponent implements OnInit, AfterContentInit {
 
   renderSearchHTML() {
     const searchHTML = '<div class="container">' +
-        '<div class="row">' +
-          '<div class="col-md-12">' +
-            '<i class="fa fa-search fa-3"></i>' +
-            '<input type="text" class="resource-search" placeholder="Search for projects, clients or tags..." id="resource-search-name"/>' +
-          '</div>' +
-        '</div>' +
-    '</div>';
+      '<div class="row">' +
+      '<div class="col-md-12">' +
+      '<i class="fa fa-search fa-3"></i>' +
+      '<input type="text" class="resource-search" placeholder="Search for projects, clients or tags..." id="resource-search-name"/>' +
+      '</div>' +
+      '</div>' +
+      '</div>';
 
     $('.fc-resource-area .fc-widget-header').html(searchHTML);
   }
 
   renderInviteHTML() {
     const inviteRow = $('<tr class="roster-actions"></tr>');
-    const inviteHTML =  inviteRow.append('<td><div class="container">' +
-                            '<div class="row">' +
-                              '<div class="col-md-5 roster-edit">Edit <span class="caret"></span></button></div>' +
-                                '<div class="col-md-4 roster-filter dropdown">' +
-                                  '<button class="btn btn-default disabled dropdown-toggle" type="button" data-toggle="dropdown">Filter' +
-                                  '<span class="caret"></span></button>' +
-                                  '<ul class="dropdown-menu">' +
-                                    '<li><a href="#">HTML</a></li>' +
-                                    '<li><a href="#">CSS</a></li>' +
-                                    '<li><a href="#">JavaScript</a></li>' +
-                                  '</ul>' +
-                                '</div>' +
-                              '<div class="col-md-3 roster-invite">' +
-                                '<a href="#" class="btn btn-default disabled">' +
-                                  '<span class="glyphicon glyphicon-plus"></span>' +
-                                  'Invite' +
-                                '</a>' +
-                              '</div>' +
-                            '</div>' +
-                        '</div></td>');
+    const inviteHTML = inviteRow.append('<td><div class="container">' +
+      '<div class="row">' +
+      '<div class="col-md-5 roster-edit">Edit <span class="caret"></span></button></div>' +
+      '<div class="col-md-4 roster-filter dropdown">' +
+      '<button class="btn btn-default disabled dropdown-toggle" type="button" data-toggle="dropdown">Filter' +
+      '<span class="caret"></span></button>' +
+      '<ul class="dropdown-menu">' +
+      '<li><a href="#">HTML</a></li>' +
+      '<li><a href="#">CSS</a></li>' +
+      '<li><a href="#">JavaScript</a></li>' +
+      '</ul>' +
+      '</div>' +
+      '<div class="col-md-3 roster-invite">' +
+      '<a href="#" class="btn btn-default disabled">' +
+      '<span class="glyphicon glyphicon-plus"></span>' +
+      'Invite' +
+      '</a>' +
+      '</div>' +
+      '</div>' +
+      '</div></td>');
     return inviteHTML;
   }
   getResourceProjectParentDOM(resourceObj) {
-    const resourceHTML =  '<div class="container resource-level-2 ' + resourceObj.className + '">' +
-                            '<div class="fc-cell-content row">' +
-                                '<div class="fc-cell-text col-md-11">' +
-                                    '<div class="resource-title">' + resourceObj.title + '</div>' +
-                                    '<div class="resource-name">' + resourceObj.name + '</div>' +
-                                '</div>' +
-                                '<div class="col-md-1"><i class="arrow up"></i></div>' +
-                            '</div>' +
-                          '</div>';
+    const resourceHTML = '<div class="container resource-level-2 ' + resourceObj.className + '">' +
+      '<div class="fc-cell-content row">' +
+      '<div class="fc-cell-text col-md-11">' +
+      '<div class="resource-title">' + resourceObj.title + '</div>' +
+      '<div class="resource-name">' + resourceObj.name + '</div>' +
+      '</div>' +
+      '<div class="col-md-1"><i class="arrow up"></i></div>' +
+      '</div>' +
+      '</div>';
 
     return resourceHTML;
   }
 
   getResourceProjectChildrenDOM(resourceObj) {
-    const resourceHTML =  '<div class="container resource-level-3">' +
-                            '<div class="fc-cell-content row">' +
-                                '<div class="fc-cell-text col-md-3 resource-title">' + resourceObj.title + '</div>' +
-                                '<div class="fc-cell-text col-md-9 text-right resource-name">' + resourceObj.name + '<img src="assets/images/avatar.png" class="profile-photo"></div>' +
-                            '</div>' +
-                          '</div>';
+    const resourceHTML = '<div class="container resource-level-3">' +
+      '<div class="fc-cell-content row">' +
+      '<div class="fc-cell-text col-md-3 resource-title">' + resourceObj.title + '</div>' +
+      '<div class="fc-cell-text col-md-9 text-right resource-name">' + resourceObj.name
+      + '<img src="assets/images/avatar.png" class="profile-photo"></div>' +
+      '</div>' +
+      '</div>';
     return resourceHTML;
   }
 
-  renderResourceProjectDivider (resourceObj, resourceTds, bodyTds) {
+  renderResourceProjectDivider(resourceObj, resourceTds, bodyTds) {
     const dividerResourceElementObj = $(resourceTds).closest('tr').prev();
     const dividerTimeAreaEleObj = $(bodyTds).closest('tr').prev();
     const dividerResourceText = dividerResourceElementObj.find('td.fc-divider span.fc-cell-text').text();
 
-      if (dividerResourceText !== '' ) {
-        const dividerHTML = '<div class="container resource-level-1">' +
-                              '<div class="fc-cell-content row">' +
-                                  '<div class="fc-cell-text col-md-11">' +
-                                      '<div class="resource-title"> Woodside Energy </div>' +
-                                      '<div class="resource-name">' + dividerResourceText + '</div>' +
-                                  '</div>' +
-                                  '<div class="col-md-1"><i class="arrow up"></i></div>' +
-                              '</div>' +
-                            '</div>';
-        dividerResourceElementObj.find('td.fc-divider').html(dividerHTML);
-      }
+    if (dividerResourceText !== '') {
+      const dividerHTML = '<div class="container resource-level-1">' +
+        '<div class="fc-cell-content row">' +
+        '<div class="fc-cell-text col-md-11">' +
+        '<div class="resource-title"> Woodside Energy </div>' +
+        '<div class="resource-name">' + dividerResourceText + '</div>' +
+        '</div>' +
+        '<div class="col-md-1"><i class="arrow up"></i></div>' +
+        '</div>' +
+        '</div>';
+      dividerResourceElementObj.find('td.fc-divider').html(dividerHTML);
+    }
 
-      dividerResourceElementObj.find('td.fc-divider').addClass(resourceObj.className);
-      dividerTimeAreaEleObj.find('td.fc-divider').addClass(resourceObj.className);
+    dividerResourceElementObj.find('td.fc-divider').addClass(resourceObj.className);
+    dividerTimeAreaEleObj.find('td.fc-divider').addClass(resourceObj.className);
 
     return;
   }
 
   getResourceTeamParentDOM(resourceObj) {
-    const resourceHTML =  '<div class="container resource-level-2 ' + resourceObj.className + '">' +
-                            '<div class="fc-cell-content row">' +
-                                '<div class="col-md-1"><img src="assets/images/avatar.png" class="profile-photo"></div>'+
-                                '<div class="col-md-10">' +
-                                  '<div class="fc-cell-text col-md-11">' +
-                                      '<div class="resource-name">' + resourceObj.name + '</div>' +
-                                      '<div class="resource-title">' + resourceObj.title + '</div>' +
-                                  '</div>' +
-                                  '<div class="col-md-1"><i class="arrow up"></i></div>' +
-                                '</div>' +
-                            '</div>' +
-                          '</div>';
+    const resourceHTML = '<div class="container resource-level-2 ' + resourceObj.className + '">' +
+      '<div class="fc-cell-content row">' +
+      '<div class="col-md-1"><img src="assets/images/avatar.png" class="profile-photo"></div>' +
+      '<div class="col-md-10">' +
+      '<div class="fc-cell-text col-md-11">' +
+      '<div class="resource-name">' + resourceObj.name + '</div>' +
+      '<div class="resource-title">' + resourceObj.title + '</div>' +
+      '</div>' +
+      '<div class="col-md-1"><i class="arrow up"></i></div>' +
+      '</div>' +
+      '</div>' +
+      '</div>';
 
     return resourceHTML;
   }
 
   getResourceTeamChildrenDOM(resourceObj) {
-    const resourceHTML =  '<div class="container resource-level-3">' +
-                            '<div class="fc-cell-content row">' +
-                                '<div class="fc-cell-text col-md-3 resource-title">' + resourceObj.title + '</div>' +
-                                '<div class="fc-cell-text col-md-9 text-right resource-name">' + resourceObj.name + '</div>' +
-                            '</div>' +
-                          '</div>';
+    const resourceHTML = '<div class="container resource-level-3">' +
+      '<div class="fc-cell-content row">' +
+      '<div class="fc-cell-text col-md-3 resource-title">' + resourceObj.title + '</div>' +
+      '<div class="fc-cell-text col-md-9 text-right resource-name">' + resourceObj.name + '</div>' +
+      '</div>' +
+      '</div>';
     return resourceHTML;
   }
 
-  renderResourceTeamDivider (resourceObj, resourceTds, bodyTds) {
+  renderResourceTeamDivider(resourceObj, resourceTds, bodyTds) {
     const dividerResourceElementObj = $(resourceTds).closest('tr').prev();
     const dividerTimeAreaEleObj = $(bodyTds).closest('tr').prev();
     const dividerResourceText = dividerResourceElementObj.find('td.fc-divider span.fc-cell-text').text();
@@ -512,13 +546,13 @@ export class RoasterComponent implements OnInit, AfterContentInit {
     }
   }
 
-  getWeekStr (startDate, endDate, dayType) {
+  getWeekStr(startDate, endDate, dayType) {
     const startDateStr = startDate.format('D');
     const endDateStr = endDate.format('D');
     let weekStr = startDate.format('D');
     if (dayType === 'day') {
       weekStr += ' ' + startDate.format('MMM');
-    }else {
+    } else {
       if (endDate.format('MMM') !== startDate.format('MMM')) {
         weekStr += ' ' + startDate.format('MMM');
       }
