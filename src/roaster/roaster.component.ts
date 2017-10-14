@@ -221,18 +221,19 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         $('button.fc-zoomIn-button').html('<span class="glyphicon glyphicon-zoom-in"></span>');
 
         const resourceLevelLength = $( '.fc-resource-area .resource-level-3' ).length;
-        console.log($('.fc-resource-area').find('roster-actions').length);
-        if ($('.fc-resource-area').find('roster-actions').length === 0) {
+        //console.log($('.fc-resource-area').find('.roster-actions').length);
+        //if ($('.fc-resource-area').find('.roster-actions').length === 0) {
           $.each($( '.fc-resource-area .resource-level-3' ), function(key, val){
             const roleDividerLength = $(this).closest('tr').next().find('td.role-divider').length;
             const fcDividerLength = $(this).closest('tr').next().find('td.fc-divider').length;
+            //console.log("roleDividerLength::"+roleDividerLength+"--fcDividerLength::"+fcDividerLength);
             if ( roleDividerLength > 0 || fcDividerLength > 0) {
               $(this).closest('tr').after(_self.renderInviteHTML());
             }else if (resourceLevelLength - 1 === key) {
               $(this).closest('tr').after(_self.renderInviteHTML());
             }
           });
-        }
+       // }
         // console.log('inviteHTMLStatus::' + inviteHTMLStatus);
         // if (!inviteHTMLStatus) {
         if ($('.fc-resource-area').find('roster-actions').length === 0) {
@@ -262,7 +263,9 @@ export class RoasterComponent implements OnInit, AfterContentInit {
         const startDate = $('#roaster-calendar').fullCalendar('getView').start;
 
         if (view.currentRangeUnit === 'week') {
-          _self.timelineWeekHeader(startDate);
+          if($(".fc-time-area").find('.week-str').length === 0) {
+            _self.timelineWeekHeader(startDate);
+          }
         }else if (view.currentRangeUnit === 'day')  {
            _self.timelineDayHeader(startDate);
         }
@@ -328,7 +331,7 @@ export class RoasterComponent implements OnInit, AfterContentInit {
       if (weekStartDate.format('w') === moment(new Date()).format('w')) {
         currentWeek = '<hr class="current-week"/>';
       }
-      row.append('<th colspan="' + colspan + '">' + currentWeek + this.getWeekStr(weekStartDate, weekEndDate, 'week') + ' </th>');
+      row.append('<th colspan="' + colspan + '" class="week-str">' + currentWeek + this.getWeekStr(weekStartDate, weekEndDate, 'week') + ' </th>');
     }
 
     if ($('.fc-head .fc-time-area colgroup').next().find('.current-week').length !== 1) {
